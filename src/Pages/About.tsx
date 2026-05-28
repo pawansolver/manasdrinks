@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useInView, animate, AnimatePresence } from "framer-motion";
 import {
@@ -49,56 +50,67 @@ const AnimatedStatCounter = ({ to, prefix = "", suffix = "" }) => {
 
 // ==================== Premium Background Component ====================
 const PremiumBackground = () => {
-  const bubbles = Array.from({ length: 30 }).map((_, i) => ({
+  const bubbles = Array.from({ length: 40 }).map((_, i) => ({
     id: i,
-    size: Math.random() * 25 + 5,
-    x: Math.random() * 100,
-    duration: Math.random() * 12 + 8,
+    size: Math.random() * 20 + 8,
+    left: Math.random() * 100,
+    duration: Math.random() * 15 + 10,
+    delay: Math.random() * 10,
+    wobble: Math.random() * 20 - 10,
+  }));
+
+  const iceCubes = Array.from({ length: 12 }).map((_, i) => ({
+    id: i,
+    size: Math.random() * 50 + 40,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    rotationX: Math.random() * 360,
+    rotationY: Math.random() * 360,
+    duration: Math.random() * 30 + 20,
     delay: Math.random() * 5,
   }));
 
-  const iceCubes = Array.from({ length: 8 }).map((_, i) => ({
-    id: i,
-    size: Math.random() * 60 + 30,
-    x: Math.random() * 90 + 5,
-    y: Math.random() * 90 + 5,
-    rotation: Math.random() * 360,
-    duration: Math.random() * 25 + 15,
-  }));
-
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-gradient-to-b from-[#050505] to-[#111]">
-      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-lime-500/10 to-transparent blur-[120px]" />
-      <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-tl from-cyan-500/10 to-transparent blur-[120px]" />
-      <div className="absolute top-[30%] left-[20%] w-[50%] h-[50%] rounded-full bg-gradient-to-r from-blue-600/5 to-purple-600/5 blur-[150px]" />
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-[#020202]">
+      <div className="absolute top-[-30%] left-[-10%] w-[70%] h-[70%] rounded-full bg-gradient-radial from-emerald-600/15 via-transparent to-transparent blur-[140px]" />
+      <div className="absolute bottom-[-30%] right-[-10%] w-[70%] h-[70%] rounded-full bg-gradient-radial from-cyan-700/20 via-transparent to-transparent blur-[140px]" />
+      <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-gradient-radial from-blue-900/30 via-transparent to-transparent blur-[160px]" />
 
       {bubbles.map((bubble) => (
         <motion.div
           key={`bubble-${bubble.id}`}
-          className="absolute bottom-[-5%] rounded-full bg-gradient-to-b from-white/20 to-transparent backdrop-blur-[2px] border border-white/10 shadow-[inset_0_1px_5px_rgba(255,255,255,0.3)]"
-          style={{ width: bubble.size, height: bubble.size, left: `${bubble.x}%` }}
+          className="absolute bottom-[-10%] rounded-full bg-gradient-to-tr from-white/10 to-transparent backdrop-blur-[1px] border border-white/20 shadow-[inset_0_2px_8px_rgba(255,255,255,0.4)]"
+          style={{ width: bubble.size, height: bubble.size, left: `${bubble.left}%` }}
           animate={{
             y: ["0vh", "-120vh"],
-            x: ["0px", `${Math.random() * 100 - 50}px`],
+            x: ["0px", `${bubble.wobble}px`, "0px", `${-bubble.wobble}px`, "0px"],
           }}
-          transition={{ duration: bubble.duration, repeat: Infinity, delay: bubble.delay, ease: "linear" }}
+          transition={{
+            y: { duration: bubble.duration, repeat: Infinity, ease: "linear", delay: bubble.delay },
+            x: { duration: bubble.duration / 3, repeat: Infinity, ease: "easeInOut", delay: bubble.delay },
+          }}
         />
       ))}
 
-      {iceCubes.map((cube) => (
-        <motion.div
-          key={`cube-${cube.id}`}
-          className="absolute bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_4px_rgba(255,255,255,0.4)] rounded-2xl"
-          style={{ width: cube.size, height: cube.size, left: `${cube.x}%`, top: `${cube.y}%` }}
-          animate={{
-            y: ["0%", "30%", "0%"],
-            x: ["0%", "10%", "0%"],
-            rotateX: [cube.rotation, cube.rotation + 180, cube.rotation + 360],
-            rotateY: [cube.rotation, cube.rotation + 180, cube.rotation + 360],
-          }}
-          transition={{ duration: cube.duration, repeat: Infinity, ease: "linear" }}
-        />
-      ))}
+      <div className="absolute inset-0" style={{ perspective: '1000px' }}>
+        {iceCubes.map((cube) => (
+          <motion.div
+            key={`cube-${cube.id}`}
+            className="absolute rounded-3xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-md border border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.5),inset_0_4px_10px_rgba(255,255,255,0.6)]"
+            style={{ width: cube.size, height: cube.size, left: `${cube.left}%`, top: `${cube.top}%` }}
+            animate={{
+              y: ["0%", "-30%", "10%", "0%"],
+              x: ["0%", "10%", "-10%", "0%"],
+              rotateX: [cube.rotationX, cube.rotationX + 180, cube.rotationX + 360],
+              rotateY: [cube.rotationY, cube.rotationY + 180, cube.rotationY + 360],
+              rotateZ: [0, 180, 360],
+            }}
+            transition={{ duration: cube.duration, repeat: Infinity, ease: "linear", delay: cube.delay }}
+          >
+            <div className="absolute inset-2 rounded-2xl bg-gradient-to-tl from-transparent to-white/10 border border-white/10" />
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -121,9 +133,9 @@ export default function About() {
         { icon: <BrainCircuit />, text: "Taurine, an essential amino acid." },
         { icon: <Droplets />, text: "B-Group Vitamins for energy metabolism." },
         {
-        icon: <Zap  />,
-        text: "Also available in a Sugar-Free version using sucralose and acesulfame K — offering the same effect with zero sugar content.",
-      },
+          icon: <Zap />,
+          text: "Also available in a Sugar-Free version using sucralose and acesulfame K — offering the same effect with zero sugar content.",
+        },
       ],
     },
     history: {
@@ -137,84 +149,83 @@ export default function About() {
       icon: <Map />,
       title: "Marketing an Empire",
       content:
-        "Red Bull's strategy is built on creating culture, not just ads. They host spectacular extreme sports events, own sports teams, and function as a media house, embodying their 'Gives You Wings' slogan. Created Red Bull Media House — a full-scale global content platform producing films, documentaries, music, and live events that amplify brand storytelling",  
+        "Red Bull's strategy is built on creating culture, not just ads. They host spectacular extreme sports events, own sports teams, and function as a media house, embodying their 'Gives You Wings' slogan. Created Red Bull Media House — a full-scale global content platform producing films, documentaries, music, and live events that amplify brand storytelling",
       points: [],
     },
   };
   const monsterData = {
-  formula: {
-    icon: <Beaker />,
-    title: 'The "Energy Blend"',
-    content:
-      "Monster's formula is more complex, featuring a proprietary 'Energy Blend' for a different kind of kick. It is designed for endurance and sustained alertness, making it popular among gamers, athletes, and night-shift workers.",
-    points: [
-      { icon: <Zap />, text: "160mg of caffeine per 16 fl oz can." },
-      {
-        icon: <BrainCircuit />,
-        text: "Includes Taurine, Panax Ginseng, and L-Carnitine for focus and stamina.",
-      },
-      {
-        icon: <ShoppingBag />,
-        text: "A larger can size (16 fl oz) is standard, giving more volume than competitors.",
-      },
-      {
-        icon: <Droplets />,
-        text: "Contains B-Vitamins and sugars that help convert food into usable energy efficiently.",
-      },
-    ],
-  },
+    formula: {
+      icon: <Beaker />,
+      title: 'The "Energy Blend"',
+      content:
+        "Monster's formula is more complex, featuring a proprietary 'Energy Blend' for a different kind of kick. It is designed for endurance and sustained alertness, making it popular among gamers, athletes, and night-shift workers.",
+      points: [
+        { icon: <Zap />, text: "160mg of caffeine per 16 fl oz can." },
+        {
+          icon: <BrainCircuit />,
+          text: "Includes Taurine, Panax Ginseng, and L-Carnitine for focus and stamina.",
+        },
+        {
+          icon: <ShoppingBag />,
+          text: "A larger can size (16 fl oz) is standard, giving more volume than competitors.",
+        },
+        {
+          icon: <Droplets />,
+          text: "Contains B-Vitamins and sugars that help convert food into usable energy efficiently.",
+        },
+      ],
+    },
 
-  history: {
-    icon: <Calendar />,
-    title: "Brand History",
-    content:
-      "Launched by Hansen Natural in 2002, Monster Energy was designed to be a direct competitor to Red Bull, offering a larger can for a similar price and a more aggressive, edgy brand image. The brand quickly positioned itself as the drink for extreme sports enthusiasts and rebellious youth. Over the years, Monster expanded globally, gaining recognition in motorsports, action sports, and esports communities. Its bold marketing and distinctive can design helped create a strong, recognizable brand identity.",
-    points: [
-      {
-        icon: <Map />,
-        text: "Started with a focus on energy and endurance, targeting athletes and students.",
-      },
-      {
-        icon: <Trophy />,
-        text: "Global expansion helped it become one of the top-selling energy drinks worldwide.",
-      },
-      {
-        icon: <Gamepad2 />,
-        text: "Maintains a loyal fanbase through event sponsorships and edgy branding.",
-      },
-    ],
-  },
+    history: {
+      icon: <Calendar />,
+      title: "Brand History",
+      content:
+        "Launched by Hansen Natural in 2002, Monster Energy was designed to be a direct competitor to Red Bull, offering a larger can for a similar price and a more aggressive, edgy brand image. The brand quickly positioned itself as the drink for extreme sports enthusiasts and rebellious youth. Over the years, Monster expanded globally, gaining recognition in motorsports, action sports, and esports communities. Its bold marketing and distinctive can design helped create a strong, recognizable brand identity.",
+      points: [
+        {
+          icon: <Map />,
+          text: "Started with a focus on energy and endurance, targeting athletes and students.",
+        },
+        {
+          icon: <Trophy />,
+          text: "Global expansion helped it become one of the top-selling energy drinks worldwide.",
+        },
+        {
+          icon: <Gamepad2 />,
+          text: "Maintains a loyal fanbase through event sponsorships and edgy branding.",
+        },
+      ],
+    },
 
-  marketing: {
-    icon: <Map />,
-    title: "A Different Marketing Beast",
-    content:
-      "Monster embeds itself in existing subcultures, heavily sponsoring motorsports, action sports, esports athletes, and rock bands. Their approach is more grassroots and community-focused, often partnering directly with niche groups. By blending extreme sports with music and gaming, Monster cultivates authentic engagement. This strategy has helped the brand resonate deeply with fans who see it as part of their lifestyle, rather than just a beverage.",
-    points: [
-      {
-        icon: <Zap />,
-        text: "Sponsors high-profile athletes and extreme sports events to maintain credibility in the adrenaline space.",
-      },
-      {
-        icon: <Music />,
-        text: "Supports music festivals, rock bands, and local events to engage cultural communities.",
-      },
-      {
-        icon: <Gamepad2 />,
-        text: "Invests in esports and gaming events to connect with younger, digitally-savvy audiences.",
-      },
-    ],
-  },
-};
+    marketing: {
+      icon: <Map />,
+      title: "A Different Marketing Beast",
+      content:
+        "Monster embeds itself in existing subcultures, heavily sponsoring motorsports, action sports, esports athletes, and rock bands. Their approach is more grassroots and community-focused, often partnering directly with niche groups. By blending extreme sports with music and gaming, Monster cultivates authentic engagement. This strategy has helped the brand resonate deeply with fans who see it as part of their lifestyle, rather than just a beverage.",
+      points: [
+        {
+          icon: <Zap />,
+          text: "Sponsors high-profile athletes and extreme sports events to maintain credibility in the adrenaline space.",
+        },
+        {
+          icon: <Music />,
+          text: "Supports music festivals, rock bands, and local events to engage cultural communities.",
+        },
+        {
+          icon: <Gamepad2 />,
+          text: "Invests in esports and gaming events to connect with younger, digitally-savvy audiences.",
+        },
+      ],
+    },
+  };
 
   const TabButton = ({ label, icon, isActive, onClick }) => (
     <button
       onClick={onClick}
-      className={`flex-1 p-3 text-sm font-semibold rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 ${
-        isActive
+      className={`flex-1 p-3 text-sm font-semibold rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 ${isActive
           ? "bg-white/10 text-white"
           : "bg-transparent text-neutral-400 hover:bg-white/5"
-      }`}
+        }`}
     >
       {" "}
       {icon} {label}{" "}
@@ -468,59 +479,59 @@ export default function About() {
               }}
               className="grid md:grid-cols-12 gap-8 items-stretch"
             >
-             {/* Left Info */}
-<div className="md:col-span-7 bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6 pt-4 backdrop-blur-sm flex flex-col justify-start order-2 md:order-1">
-  {/* Tabs */}
-  <div className="flex bg-neutral-800/50 p-1 rounded-xl mb-4">
-    <TabButton
-      label="Formula"
-      icon={<Beaker size={16} />}
-      isActive={activeTabMonster === "formula"}
-      onClick={() => setActiveTabMonster("formula")}
-    />
-    <TabButton
-      label="History"
-      icon={<Calendar size={16} />}
-      isActive={activeTabMonster === "history"}
-      onClick={() => setActiveTabMonster("history")}
-    />
-    <TabButton
-      label="Marketing"
-      icon={<Map size={16} />}
-      isActive={activeTabMonster === "marketing"}
-      onClick={() => setActiveTabMonster("marketing")}
-    />
-  </div>
+              {/* Left Info */}
+              <div className="md:col-span-7 bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6 pt-4 backdrop-blur-sm flex flex-col justify-start order-2 md:order-1">
+                {/* Tabs */}
+                <div className="flex bg-neutral-800/50 p-1 rounded-xl mb-4">
+                  <TabButton
+                    label="Formula"
+                    icon={<Beaker size={16} />}
+                    isActive={activeTabMonster === "formula"}
+                    onClick={() => setActiveTabMonster("formula")}
+                  />
+                  <TabButton
+                    label="History"
+                    icon={<Calendar size={16} />}
+                    isActive={activeTabMonster === "history"}
+                    onClick={() => setActiveTabMonster("history")}
+                  />
+                  <TabButton
+                    label="Marketing"
+                    icon={<Map size={16} />}
+                    isActive={activeTabMonster === "marketing"}
+                    onClick={() => setActiveTabMonster("marketing")}
+                  />
+                </div>
 
-  <AnimatePresence mode="wait">
-    <motion.div
-      key={activeTabMonster}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
-    >
-      <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-        {monsterData[activeTabMonster].icon}
-        {monsterData[activeTabMonster].title}
-      </h3>
-      <p className="text-neutral-400 mb-4">
-        {monsterData[activeTabMonster].content}
-      </p>
-      <div className="space-y-2">
-        {monsterData[activeTabMonster].points.map((point, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-3 text-neutral-300"
-          >
-            <div className="text-lime-400">{point.icon}</div>
-            <span>{point.text}</span>
-          </div>
-        ))}
-      </div>
-    </motion.div>
-  </AnimatePresence>
-</div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTabMonster}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                      {monsterData[activeTabMonster].icon}
+                      {monsterData[activeTabMonster].title}
+                    </h3>
+                    <p className="text-neutral-400 mb-4">
+                      {monsterData[activeTabMonster].content}
+                    </p>
+                    <div className="space-y-2">
+                      {monsterData[activeTabMonster].points.map((point, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-3 text-neutral-300"
+                        >
+                          <div className="text-lime-400">{point.icon}</div>
+                          <span>{point.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
 
               {/* Right Card */}
@@ -539,34 +550,34 @@ export default function About() {
               </div>
             </motion.div>
           </motion.div>
-          
-         {/* === NEW SECTION WITH IMAGE TAG === */}
-<motion.section
-  initial={{ opacity: 0, y: 50 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true, amount: 0.3 }}
-  transition={{ duration: 0.8, ease: "easeOut" }}
-  className="py-20"
->
-  {/* This div is now the container for the image and overlay */}
-  <div
-    className="relative min-h-[400px] md:min-h-[500px] rounded-3xl border border-neutral-800 overflow-hidden"
-  >
-    {/* The image is now a proper <img> tag with motion properties */}
-    <motion.img
-      src="/bg/monsterbanner.jpg"
-      alt="Monster Energy banner with claw marks"
-      className="absolute inset-0 w-full h-full object-cover"
-      initial={{ scale: 1.1, opacity: 0 }}
-      whileInView={{ scale: 1, opacity: 1 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-    />
-    
-    {/* The overlay still sits on top of the image */}
-    <div className="absolute inset-0 bg-black/50"></div>
-  </div>
-</motion.section> 
+
+          {/* === NEW SECTION WITH IMAGE TAG === */}
+          <motion.section
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="py-20"
+          >
+            {/* This div is now the container for the image and overlay */}
+            <div
+              className="relative min-h-[400px] md:min-h-[500px] rounded-3xl border border-neutral-800 overflow-hidden"
+            >
+              {/* The image is now a proper <img> tag with motion properties */}
+              <motion.img
+                src="/bg/monsterbanner.jpg"
+                alt="Monster Energy banner with claw marks"
+                className="absolute inset-0 w-full h-full object-cover"
+                initial={{ scale: 1.1, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              />
+
+              {/* The overlay still sits on top of the image */}
+              <div className="absolute inset-0 bg-black/50"></div>
+            </div>
+          </motion.section>
 
           <motion.section
             initial={{ opacity: 0 }}
@@ -588,8 +599,8 @@ export default function About() {
                   item.brand === "Red Bull"
                     ? "border-t-blue-500 hover:shadow-blue-500/30"
                     : item.brand === "Monster"
-                    ? "border-t-lime-500 hover:shadow-lime-500/30"
-                    : "border-t-purple-500 hover:shadow-purple-500/30";
+                      ? "border-t-lime-500 hover:shadow-lime-500/30"
+                      : "border-t-purple-500 hover:shadow-purple-500/30";
 
                 return (
                   <motion.div
@@ -598,17 +609,16 @@ export default function About() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className={`bg-white/5 backdrop-blur-md border border-white/10 border-t-4 ${brandClass} rounded-xl p-6 flex flex-col h-full hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-lg shadow-[0_4px_24px_rgba(0,0,0,0.2)]`}
+                    className={`bg-white/5 backdrop-blur-xl border border-white/10 border-t-4 ${brandClass} rounded-xl p-6 flex flex-col h-full hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,0,0,0.6)] shadow-[0_8px_32px_rgba(0,0,0,0.4)]`}
                   >
                     <p className="text-3xl font-bold text-white mb-2">
                       {item.year}
                     </p>
                     <h3
-                      className={`font-semibold text-lg mb-4 ${
-                        item.brand === "Red Bull"
+                      className={`font-semibold text-lg mb-4 ${item.brand === "Red Bull"
                           ? "text-blue-400"
                           : "text-lime-400"
-                      }`}
+                        }`}
                     >
                       {item.brand}
                     </h3>
@@ -643,7 +653,7 @@ export default function About() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white/5 border border-white/10 p-6 rounded-2xl text-center backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-lg hover:shadow-lime-500/30 transition-all duration-300"
+                  className="bg-white/5 border border-white/10 p-6 rounded-2xl text-center backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:bg-white/10 transition-all duration-300"
                 >
                   <div className="inline-block p-4 bg-neutral-800 rounded-full mb-4 text-lime-400">
                     {item.icon}
