@@ -47,6 +47,62 @@ const AnimatedStatCounter = ({ to, prefix = "", suffix = "" }) => {
   );
 };
 
+// ==================== Premium Background Component ====================
+const PremiumBackground = () => {
+  const bubbles = Array.from({ length: 30 }).map((_, i) => ({
+    id: i,
+    size: Math.random() * 25 + 5,
+    x: Math.random() * 100,
+    duration: Math.random() * 12 + 8,
+    delay: Math.random() * 5,
+  }));
+
+  const iceCubes = Array.from({ length: 8 }).map((_, i) => ({
+    id: i,
+    size: Math.random() * 60 + 30,
+    x: Math.random() * 90 + 5,
+    y: Math.random() * 90 + 5,
+    rotation: Math.random() * 360,
+    duration: Math.random() * 25 + 15,
+  }));
+
+  return (
+    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none bg-gradient-to-b from-[#050505] to-[#111]">
+      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-lime-500/10 to-transparent blur-[120px]" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-gradient-to-tl from-cyan-500/10 to-transparent blur-[120px]" />
+      <div className="absolute top-[30%] left-[20%] w-[50%] h-[50%] rounded-full bg-gradient-to-r from-blue-600/5 to-purple-600/5 blur-[150px]" />
+
+      {bubbles.map((bubble) => (
+        <motion.div
+          key={`bubble-${bubble.id}`}
+          className="absolute bottom-[-5%] rounded-full bg-gradient-to-b from-white/20 to-transparent backdrop-blur-[2px] border border-white/10 shadow-[inset_0_1px_5px_rgba(255,255,255,0.3)]"
+          style={{ width: bubble.size, height: bubble.size, left: `${bubble.x}%` }}
+          animate={{
+            y: ["0vh", "-120vh"],
+            x: ["0px", `${Math.random() * 100 - 50}px`],
+          }}
+          transition={{ duration: bubble.duration, repeat: Infinity, delay: bubble.delay, ease: "linear" }}
+        />
+      ))}
+
+      {iceCubes.map((cube) => (
+        <motion.div
+          key={`cube-${cube.id}`}
+          className="absolute bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_1px_4px_rgba(255,255,255,0.4)] rounded-2xl"
+          style={{ width: cube.size, height: cube.size, left: `${cube.x}%`, top: `${cube.y}%` }}
+          animate={{
+            y: ["0%", "30%", "0%"],
+            x: ["0%", "10%", "0%"],
+            rotateX: [cube.rotation, cube.rotation + 180, cube.rotation + 360],
+            rotateY: [cube.rotation, cube.rotation + 180, cube.rotation + 360],
+          }}
+          transition={{ duration: cube.duration, repeat: Infinity, ease: "linear" }}
+        />
+      ))}
+    </div>
+  );
+};
+
 // ==================== Main About Page Component ====================
 export default function About() {
   // State for the tabbed interfaces remains the same
@@ -254,11 +310,8 @@ export default function About() {
   );
 
   return (
-    <div className="bg-black text-neutral-200 min-h-screen font-sans overflow-x-hidden">
-      <div className="absolute inset-0 z-0 opacity-40">
-        <div className="absolute bottom-0 left-[-20%] right-[-20%] top-[20%] h-[1000px] w-[140%] rounded-full bg-gradient-radial from-lime-500/40 via-black to-black animate-pulse-slow"></div>
-        <div className="absolute bottom-[-40%] left-[20%] right-[20%] h-[800px] w-[60%] rounded-full bg-gradient-radial from-cyan-500/30 via-black to-black animate-pulse-slow animation-delay-3000"></div>
-      </div>
+    <div className="bg-transparent text-neutral-200 min-h-screen font-sans overflow-x-hidden relative">
+      <PremiumBackground />
 
       <div className="relative z-10">
         <Navbar />
@@ -545,7 +598,7 @@ export default function About() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.5 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className={`bg-neutral-900/50 border border-neutral-800 border-t-4 ${brandClass} rounded-xl p-6 flex flex-col h-full hover:bg-neutral-800/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-lg`}
+                    className={`bg-white/5 backdrop-blur-md border border-white/10 border-t-4 ${brandClass} rounded-xl p-6 flex flex-col h-full hover:bg-white/10 transition-all duration-300 hover:-translate-y-2 hover:shadow-lg shadow-[0_4px_24px_rgba(0,0,0,0.2)]`}
                   >
                     <p className="text-3xl font-bold text-white mb-2">
                       {item.year}
@@ -590,7 +643,7 @@ export default function About() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true, amount: 0.5 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-2xl text-center backdrop-blur-sm hover:-translate-y-2 hover:shadow-lg hover:shadow-lime-500/30 transition-all duration-300"
+                  className="bg-white/5 border border-white/10 p-6 rounded-2xl text-center backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.2)] hover:-translate-y-2 hover:shadow-lg hover:shadow-lime-500/30 transition-all duration-300"
                 >
                   <div className="inline-block p-4 bg-neutral-800 rounded-full mb-4 text-lime-400">
                     {item.icon}
