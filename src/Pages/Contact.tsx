@@ -59,8 +59,8 @@ const buttonVariants = {
 
 // ==================== MAIN PAGE COMPONENT ====================
 
-export default function Contact() {
-  const handleSubmit = (e) => {
+export default function Contact({ hideNavbar = false }: { hideNavbar?: boolean }) {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     // In a real application, you'd send this data to a backend or service like EmailJS
     alert("Message sent! (Simulated)");
@@ -74,7 +74,7 @@ export default function Contact() {
       initial="hidden"
       animate="visible"
     >
-      <Navbar />
+      {!hideNavbar && <Navbar />}
 
       <section className="relative w-full py-16 md:py-24 px-6 md:px-12 lg:px-24 flex items-center justify-center">
         <div className="absolute inset-0 bg-black z-0"></div>{" "}
