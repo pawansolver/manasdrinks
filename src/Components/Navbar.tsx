@@ -40,13 +40,13 @@ const Navbar = memo(() => {
           <motion.img
             src="/mLogo.png"
             alt="Logo"
-            width={40}
-            height={40}
+            width={64}
+            height={64}
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-            className="w-10 h-10 rounded-full object-cover shadow-[0_0_12px_rgba(0,255,255,0.5)] group-hover:shadow-[0_0_20px_rgba(0,255,255,0.9)]"
+            className="w-16 h-16 rounded-full object-cover shadow-[0_0_12px_rgba(0,255,255,0.5)] group-hover:shadow-[0_0_20px_rgba(0,255,255,0.9)]"
           />
-          <span className="text-white font-bold text-base group-hover:text-cyan-400 transition-colors hidden sm:block">
+          <span className="text-white font-bold text-xl tracking-wide group-hover:text-cyan-400 transition-colors hidden sm:block">
             Manash
           </span>
         </button>

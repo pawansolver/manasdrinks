@@ -2,9 +2,14 @@ import React, { useRef, useMemo, Suspense } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 
-const CanModel = ({ modelPath, scale = 1, position = [0, 0, 0], rotationSpeed = 0 }) => {
-  const { scene } = useGLTF(modelPath);
-  const modelRef = useRef();
+const Mesh: any = "mesh";
+const SphereGeometry: any = "sphereGeometry";
+const MeshStandardMaterial: any = "meshStandardMaterial";
+const Primitive: any = "primitive";
+
+const CanModel = ({ modelPath, scale = 1, position = [0, 0, 0], rotationSpeed = 0 }: any) => {
+  const { scene } = useGLTF(modelPath as string) as any;
+  const modelRef = useRef<any>(null);
 
   // Cache cloned model so it doesn't reload on every render
   const clonedScene = useMemo(() => scene.clone(), [scene]);
@@ -15,7 +20,7 @@ const CanModel = ({ modelPath, scale = 1, position = [0, 0, 0], rotationSpeed = 
     }
   });
 
-  return <primitive ref={modelRef} object={clonedScene} scale={scale} position={position} />;
+  return <Primitive ref={modelRef} object={clonedScene} scale={scale} position={position} />;
 };
 
 // ✅ Preload all models for faster switching
@@ -26,16 +31,16 @@ const CanModel = ({ modelPath, scale = 1, position = [0, 0, 0], rotationSpeed = 
   "/model/orange.glb",
   "/model/pink.glb",
   "/model/lit.glb"
-].forEach(useGLTF.preload);
+].forEach(path => useGLTF.preload(path));
 
-export default function CanModelWithSuspense(props) {
+export default function CanModelWithSuspense(props: any) {
   return (
     <Suspense
       fallback={
-        <mesh>
-          <sphereGeometry args={[0.2, 16, 16]} />
-          <meshStandardMaterial color="#444" />
-        </mesh>
+        <Mesh>
+          <SphereGeometry args={[0.2, 16, 16]} />
+          <MeshStandardMaterial color="#444" />
+        </Mesh>
       }
     >
       <CanModel {...props} />

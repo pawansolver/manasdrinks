@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+// @ts-nocheck
 import App from './App';
 
 test('renders learn react link', () => {

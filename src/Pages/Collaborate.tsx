@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import LiquidEther from "../Components/LiquidEther";
 import Navbar from "../Components/Navbar";

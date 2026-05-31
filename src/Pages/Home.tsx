@@ -33,6 +33,122 @@ const textVariants = {
 const FlavourCarousel = lazy(() => import("../Components/FlavourCarousel"));
 const LabubuBanner = lazy(() => import("../Components/labubuBanner"));
 
+// ==================== BRAND SLIDER COMPONENT ====================
+const BRAND_IMAGES = [
+  "/brand/image.png",
+  "/brand/image copy.png",
+  "/brand/image copy 2.png",
+  "/brand/image copy 3.png",
+  "/brand/image copy 4.png",
+  "/brand/image copy 5.png",
+  "/brand/image copy 6.png",
+  "/brand/image copy 7.png",
+  "/brand/image copy 8.png",
+  "/brand/image copy 9.png",
+  "/brand/image copy 10.png",
+  "/brand/image copy 11.png",
+  "/brand/image copy 12.png",
+  "/brand/image copy 13.png",
+  "/brand/image copy 14.png",
+  "/brand/image copy 15.png",
+  "/brand/image copy 16.png",
+];
+
+function BrandSlider() {
+  const [lightboxSrc, setLightboxSrc] = useState(null);
+
+  // Close lightbox on Escape key
+  useEffect(() => {
+    const handler = (e) => { if (e.key === "Escape") setLightboxSrc(null); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+  return (
+    <>
+      {/* ── Lightbox Modal ── */}
+      {lightboxSrc && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/92 backdrop-blur-lg"
+          onClick={() => setLightboxSrc(null)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.82 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <img
+              src={lightboxSrc}
+              alt="Brand Full View"
+              className="max-w-[90vw] max-h-[88vh] object-contain rounded-2xl shadow-[0_0_80px_rgba(163,230,53,0.35)]"
+            />
+            <button
+              onClick={() => setLightboxSrc(null)}
+              className="absolute -top-5 -right-5 w-11 h-11 rounded-full bg-white/15 border border-white/25 text-white text-lg font-bold flex items-center justify-center hover:bg-white/30 hover:scale-110 transition-all duration-200"
+            >
+              ✕
+            </button>
+            <p className="text-center text-white/40 text-xs mt-3">Click outside or press Esc to close</p>
+          </motion.div>
+        </div>
+      )}
+
+      {/* ── Slider Track ── */}
+      <div className="relative w-full overflow-hidden">
+        {/* Fade masks */}
+        <div className="absolute left-0 top-0 h-full w-28 bg-gradient-to-r from-[#111] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 h-full w-28 bg-gradient-to-l from-[#111] to-transparent z-10 pointer-events-none" />
+
+        <div className="flex gap-8 home-brand-track" style={{ width: "max-content" }}>
+          {[...Array(2)].flatMap((_, set) =>
+            BRAND_IMAGES.map((src, i) => (
+              <div
+                key={`hb-${set}-${i}`}
+                onClick={() => setLightboxSrc(src)}
+                className="relative flex-shrink-0 w-72 h-[400px] rounded-2xl overflow-hidden flex items-center justify-center cursor-pointer group transition-all duration-300 hover:scale-[1.03]"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))",
+                  backdropFilter: "blur(8px)",
+                  border: "1.5px solid rgba(163, 230, 53, 0.45)",
+                  boxShadow: "0 0 18px rgba(163,230,53,0.15)",
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = "rgba(163,230,53,0.9)";
+                  e.currentTarget.style.boxShadow = "0 0 40px rgba(163,230,53,0.4)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = "rgba(163,230,53,0.45)";
+                  e.currentTarget.style.boxShadow = "0 0 18px rgba(163,230,53,0.15)";
+                }}
+              >
+                <img
+                  src={src}
+                  alt={`Brand ${i + 1}`}
+                  className="max-w-[90%] max-h-[90%] object-contain group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
+                />
+                {/* Hover hint */}
+                <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 text-white/80 text-xs px-2.5 py-1 rounded-lg backdrop-blur-sm">
+                  Click to expand
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        .home-brand-track { animation: homeBrandScroll ${17 * 3}s linear infinite; }
+        .home-brand-track:hover { animation-play-state: paused; }
+        @keyframes homeBrandScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+      `}</style>
+    </>
+  );
+}
+
+
 // ==================== DATA CONFIGURATIONS ====================
 const cans = [
   {
@@ -385,37 +501,101 @@ export default function Home() {
   if (!isLoaded) {
     return (
       <motion.div
-        className="fixed inset-0 bg-black flex flex-col items-center justify-center text-white font-display z-[9999]"
+        className="fixed inset-0 bg-black flex flex-col items-center justify-center text-white z-[9999] overflow-hidden"
         initial={{ opacity: 1 }}
-        animate={{ opacity: isLoaded ? 0 : 1 }}
-        transition={{ duration: 1 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
       >
-        <motion.img
-          src="/mabt2.png" // change this to your brand logo
-          alt="Loading..."
-          className="w-32 h-32 mb-6 animate-pulse"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}
-        />
-        <motion.div
-          className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden"
+        {/* Ambient green glow background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-green-500/10 blur-[120px]" />
+        </div>
+
+        {/* 3D spinning logo container */}
+        <div className="relative flex items-center justify-center mb-10" style={{ perspective: "800px" }}>
+
+          {/* Outer rotating green ring */}
+          <motion.div
+            className="absolute w-52 h-52 rounded-full border-2 border-transparent"
+            style={{
+              borderTopColor: "#22c55e",
+              borderRightColor: "#22c55e33",
+              borderBottomColor: "transparent",
+              borderLeftColor: "#22c55e33",
+            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "linear" }}
+          />
+
+          {/* Inner rotating ring (reverse) */}
+          <motion.div
+            className="absolute w-40 h-40 rounded-full border-2 border-transparent"
+            style={{
+              borderTopColor: "transparent",
+              borderRightColor: "#4ade80",
+              borderBottomColor: "#4ade8055",
+              borderLeftColor: "transparent",
+            }}
+            animate={{ rotate: -360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+
+          {/* 3D spinning logo */}
+          <motion.div
+            style={{ transformStyle: "preserve-3d" }}
+            animate={{ rotateY: [0, 360] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <motion.img
+              src="/logo/MANASH_LOGO.jpg__1_-removebg-preview.png"
+              alt="Manash Logo"
+              className="w-32 h-32 object-contain"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              style={{
+                filter: "drop-shadow(0 0 20px rgba(34,197,94,0.8))",
+              }}
+            />
+          </motion.div>
+        </div>
+
+        {/* Brand name */}
+        <motion.h1
+          className="text-2xl font-black tracking-[0.3em] uppercase mb-1"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          style={{ color: "#22c55e" }}
+        >
+          MANASH
+        </motion.h1>
+        <motion.p
+          className="text-xs tracking-[0.5em] text-gray-400 uppercase mb-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
         >
+          Beverage
+        </motion.p>
+
+        {/* Progress bar */}
+        <div className="w-56 h-[3px] bg-white/10 rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-lime-400"
+            className="h-full rounded-full"
+            style={{ background: "linear-gradient(90deg, #16a34a, #4ade80)" }}
             initial={{ width: "0%" }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.2 }}
           />
-        </motion.div>
-        <p className="mt-4 text-gray-400 tracking-wider text-sm">
-          Loading Energy Assets... {progress}%
+        </div>
+        <p className="mt-3 text-gray-500 text-xs tracking-widest">
+          {progress < 100 ? `Loading... ${progress}%` : "Ready"}
         </p>
       </motion.div>
     );
   }
+
 
   // ==================== MAIN PAGE (everything below stays same) ====================
 
@@ -621,32 +801,16 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="relative w-full bg-[#111] py-20 px-6 flex flex-col items-center">
-        <h2 className="text-4xl md:text-6xl font-black mb-6 font-display">New Releases</h2>
-        <p className="text-lg text-gray-400 max-w-2xl text-center mb-16">
+      <section className="relative w-full bg-[#111] py-20 px-6 flex flex-col items-center overflow-hidden">
+        <h2 className="text-4xl md:text-6xl font-black mb-4 font-display">Our Brands</h2>
+        <p className="text-lg text-gray-200 max-w-2xl text-center mb-14 font-medium">
           Explore the cutting edge of energy — crafted with bold flavors and a relentless drive for performance.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 w-full max-w-6xl">
-          {newReleases.map((release) => (
-            <motion.div
-              key={release.id}
-              className="flex flex-col items-center group"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div
-                className="relative w-full h-[400px] rounded-lg overflow-hidden"
-                style={{ boxShadow: `0 0 40px ${release.glowColor}` }}
-              >
-                <ProductScene config={release} />
-              </div>
-              <h3 className="text-3xl font-bold mt-6 font-display" style={{ color: release.modelGlowColor }}>
-                {release.title}
-              </h3>
-              <p className="text-gray-400 text-lg">{release.flavor}</p>
-            </motion.div>
-          ))}
-        </div>
+
+        <BrandSlider />
       </section>
+
+
 
       {/* === COMPANY ABOUT + WHY US (premium beverage background) === */}
       <div className="relative w-full overflow-hidden border-t border-neutral-900">

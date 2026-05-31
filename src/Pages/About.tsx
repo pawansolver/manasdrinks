@@ -1,738 +1,627 @@
 // @ts-nocheck
-import React, { useState, useEffect, useRef } from "react";
-import { motion, useInView, animate, AnimatePresence } from "framer-motion";
-import {
-  Droplets,
-  Zap,
-  BrainCircuit,
-  Calendar,
-  ChevronsRight,
-  ShoppingBag,
-  Beaker,
-  Map,
-  Trophy,
-  Gamepad2,
-  Music,
-  Milestone,
-} from "lucide-react";
-import Navbar from "../Components/Navbar"; // Adjust path if necessary
+"use client";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import Navbar from "../Components/Navbar";
 
-// ==================== Animated Counter Component ====================
-const AnimatedStatCounter = ({ to, prefix = "", suffix = "" }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-  const [displayValue, setDisplayValue] = useState(0);
+// ── helpers ──────────────────────────────────────────────────────────────────
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 40 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.2 },
+  transition: { duration: 0.7, ease: "easeOut", delay },
+});
 
-  useEffect(() => {
-    if (isInView) {
-      const controls = animate(0, to, {
-        duration: 2,
-        ease: "easeOut",
-        onUpdate(value) {
-          setDisplayValue(Math.floor(value));
-        },
-      });
-      return () => controls.stop();
-    }
-  }, [isInView, to]);
+const SectionTitle = ({ children, accent = "#22c55e" }) => (
+  <h2
+    className="text-3xl md:text-4xl font-extrabold mb-6"
+    style={{ color: accent }}
+  >
+    {children}
+  </h2>
+);
 
-  return (
-    <p
-      ref={ref}
-      className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-lime-400 to-green-500 mb-1"
-    >
-      {prefix}
-      {displayValue}
-      {suffix}
-    </p>
-  );
-};
+const BulletItem = ({ label, value }) => (
+  <div className="flex flex-wrap gap-2 py-1.5 border-b border-white/10">
+    <span className="text-green-400 font-semibold min-w-[220px]">{label}</span>
+    <span className="text-neutral-200">{value}</span>
+  </div>
+);
 
-// ==================== Main About Page Component ====================
+// ── Main Component ────────────────────────────────────────────────────────────
 export default function About() {
-  // State for the tabbed interfaces remains the same
-  const [activeTabRedBull, setActiveTabRedBull] = useState("formula");
-  const [activeTabMonster, setActiveTabMonster] = useState("formula");
+  const [gpTab, setGpTab] = useState("overview");
 
-  // Data objects remain the same
-  const redBullData = {
-    formula: {
-      icon: <Beaker />,
-      title: "The Formula Breakdown",
+  // ── Manash data ──────────────────────────────────────────────────────────
+  const keyAspects = [
+    {
+      title: "History",
+      color: "#22c55e",
       content:
-        "Red Bull's effectiveness comes from a core combination of high-quality ingredients designed for performance.",
-      points: [
-        { icon: <Zap />, text: "80mg of caffeine per 8.4 fl oz can." },
-        { icon: <BrainCircuit />, text: "Taurine, an essential amino acid." },
-        { icon: <Droplets />, text: "B-Group Vitamins for energy metabolism." },
-        {
-          icon: <Zap />,
-          text: "Also available in a Sugar-Free version using sucralose and acesulfame K — offering the same effect with zero sugar content.",
-        },
-      ],
+        "MANASH BEVERAGE started its journey in 2015 in the segment of water industry. MANASH established the water plant for NEELJAL COMPANY in 2011 in Muzaffarpur, then continued its journey in collaboration with ENERGY BEVERAGES PVT LTD, Brand Name CLEAR Water Plant in MUZAFFARPUR in 2021. MANASH BEVERAGE successfully established another plant of G20 WATER plant in HAZIPUR in 2023-24.",
     },
-    history: {
-      icon: <Calendar />,
-      title: "The Origin Story",
+    {
+      title: "Market Leadership",
+      color: "#22c55e",
       content:
-        "In 1982, Dietrich Mateschitz discovered a Thai drink, Krating Daeng, and adapted it for the Western market. Red Bull GmbH was founded in 1987, creating an entirely new product category. The first Red Bull cans hit shelves in Austria in 1987, marking the birth of the global energy drink industry Within just a few years, Red Bull became a symbol of innovation, targeting students, athletes, and night-shift workers",
-      points: [],
+        "MANASH BEVERAGE has a significant market share in the Indian Water Industry, with AROUND 3 operational plants and a vast distribution network in 22 districts of Bihar with a strong network of Sales Team.",
     },
-    marketing: {
-      icon: <Map />,
-      title: "Marketing an Empire",
+    {
+      title: "Product Line",
+      color: "#22c55e",
       content:
-        "Red Bull's strategy is built on creating culture, not just ads. They host spectacular extreme sports events, own sports teams, and function as a media house, embodying their 'Gives You Wings' slogan. Created Red Bull Media House — a full-scale global content platform producing films, documentaries, music, and live events that amplify brand storytelling",
-      points: [],
+        "Besides its namesake brands also established and distributes a premium drinking water.",
     },
-  };
-  const monsterData = {
-    formula: {
-      icon: <Beaker />,
-      title: 'The "Energy Blend"',
+    {
+      title: "Expansion",
+      color: "#22c55e",
       content:
-        "Monster's formula is more complex, featuring a proprietary 'Energy Blend' for a different kind of kick. It is designed for endurance and sustained alertness, making it popular among gamers, athletes, and night-shift workers.",
-      points: [
-        { icon: <Zap />, text: "160mg of caffeine per 16 fl oz can." },
-        {
-          icon: <BrainCircuit />,
-          text: "Includes Taurine, Panax Ginseng, and L-Carnitine for focus and stamina.",
-        },
-        {
-          icon: <ShoppingBag />,
-          text: "A larger can size (16 fl oz) is standard, giving more volume than competitors.",
-        },
-        {
-          icon: <Droplets />,
-          text: "Contains B-Vitamins and sugars that help convert food into usable energy efficiently.",
-        },
-      ],
+        "MANASH BEVERAGE has expanded its operations both within BIHAR and into neighboring states like Jharkhand and Chhattisgarh.",
     },
+    {
+      title: "Ownership",
+      color: "#22c55e",
+      content: (
+        <>
+          MANASH BEVERAGE is an unlisted Proprietor based company under{" "}
+          <strong>GSTN: 10AWGPR6556A1ZT</strong>.{" "}
+          <strong>Dr. Reetu Raj</strong> is a Sole Proprietor of the Company.
+        </>
+      ),
+    },
+    {
+      title: "Financial Performance",
+      color: "#22c55e",
+      content:
+        "The company's revenue and profits have shown significant growth in recent years, indicating a strong and successful business model.",
+    },
+    {
+      title: "Distribution",
+      color: "#22c55e",
+      content:
+        "MANASH BEVERAGE has a robust distribution network, including 150 distributors, 4000 retailers and 250 distribution trucks tied up with the transport companies. They also sell their products through their own e-commerce platform and other online retailers.",
+    },
+  ];
 
-    history: {
-      icon: <Calendar />,
-      title: "Brand History",
-      content:
-        "Launched by Hansen Natural in 2002, Monster Energy was designed to be a direct competitor to Red Bull, offering a larger can for a similar price and a more aggressive, edgy brand image. The brand quickly positioned itself as the drink for extreme sports enthusiasts and rebellious youth. Over the years, Monster expanded globally, gaining recognition in motorsports, action sports, and esports communities. Its bold marketing and distinctive can design helped create a strong, recognizable brand identity.",
-      points: [
-        {
-          icon: <Map />,
-          text: "Started with a focus on energy and endurance, targeting athletes and students.",
-        },
-        {
-          icon: <Trophy />,
-          text: "Global expansion helped it become one of the top-selling energy drinks worldwide.",
-        },
-        {
-          icon: <Gamepad2 />,
-          text: "Maintains a loyal fanbase through event sponsorships and edgy branding.",
-        },
-      ],
+  // ── Green Packsys data ───────────────────────────────────────────────────
+  const gpProducts = [
+    { code: "STP", name: "Sewage Treatment Plants" },
+    { code: "ETP", name: "Effluent Treatment Plants" },
+    {
+      code: "RO",
+      name: "Reverse Osmosis Plants (For Commercial / Industrial Use)",
     },
+    { code: "DM", name: "De-Mineralized Water Plant" },
+    { code: "—", name: "Water Softeners Plants" },
+    { code: "—", name: "Ultra Filtration Plants for Contaminated Area" },
+    {
+      code: "—",
+      name: "Water Treatment Plant for Microbial and Chemical Infected Area",
+    },
+  ];
 
-    marketing: {
-      icon: <Map />,
-      title: "A Different Marketing Beast",
-      content:
-        "Monster embeds itself in existing subcultures, heavily sponsoring motorsports, action sports, esports athletes, and rock bands. Their approach is more grassroots and community-focused, often partnering directly with niche groups. By blending extreme sports with music and gaming, Monster cultivates authentic engagement. This strategy has helped the brand resonate deeply with fans who see it as part of their lifestyle, rather than just a beverage.",
-      points: [
-        {
-          icon: <Zap />,
-          text: "Sponsors high-profile athletes and extreme sports events to maintain credibility in the adrenaline space.",
-        },
-        {
-          icon: <Music />,
-          text: "Supports music festivals, rock bands, and local events to engage cultural communities.",
-        },
-        {
-          icon: <Gamepad2 />,
-          text: "Invests in esports and gaming events to connect with younger, digitally-savvy audiences.",
-        },
-      ],
-    },
+  const gpClients = {
+    Corporate: "Lords Group, Innodata India Pvt. Ltd., HCL, L&T, CLEAR Water, G20 Water, and many more.",
+    "Schools / Colleges":
+      "DAV, DPS, GD Goenka, Manash International, Gurukul Academy, NIIT, S S Academy and many more.",
+    Hospitals:
+      "SS YADAV Hospital, Jindal's, Amex Nursing Home, Apollo Pharmacy, Nidan Hospital and many more.",
   };
 
-  const TabButton = ({ label, icon, isActive, onClick }) => (
-    <button
-      onClick={onClick}
-      className={`flex-1 p-3 text-sm font-semibold rounded-lg transition-colors duration-300 flex items-center justify-center gap-2 ${isActive
-        ? "bg-white/10 text-white"
-        : "bg-transparent text-neutral-400 hover:bg-white/5"
-        }`}
-    >
-      {" "}
-      {icon} {label}{" "}
-    </button>
-  );
-
-  const timelineEvents = [
-    {
-      year: 1987,
-      brand: "Red Bull",
-      event:
-        "Red Bull officially launches in Austria, creating the modern energy drink market.",
-    },
-    {
-      year: 2002,
-      brand: "Monster",
-      event:
-        "Monster Energy is launched by Hansen Natural Corp, targeting the US market with a 16oz can.",
-    },
-    {
-      year: 2004,
-      brand: "Red Bull",
-      event:
-        "Red Bull enters Formula 1, purchasing the Jaguar Racing team to create Red Bull Racing.",
-    },
-    {
-      year: 2009,
-      brand: "Monster",
-      event:
-        "Monster becomes a title sponsor in AMA Supercross, solidifying its motorsports presence.",
-    },
-    {
-      year: 2012,
-      brand: "Red Bull",
-      event:
-        'The "Stratos" project sees Felix Baumgartner break the sound barrier during a freefall from the stratosphere.',
-    },
-    {
-      year: 2015,
-      brand: "Monster",
-      event:
-        "Coca-Cola acquires a 16.7% stake in Monster, greatly expanding its global distribution network.",
-    },
+  const gpBasicInfo = [
+    { label: "Nature of Business", value: "Manufacturer / Supplier" },
+    { label: "Company GST", value: "10ASBPK2100N2ZD" },
+    { label: "Company CEO", value: "Neel Kamal" },
+    { label: "Company GM – Sales & Marketing", value: "Rohit Sharma" },
   ];
 
-  const culturalImpacts = [
-    {
-      icon: <Trophy />,
-      title: "Extreme Sports",
-      description:
-        "They didn't just sponsor sports; they professionalized them, turning niche hobbies like snowboarding and FMX into global spectacles.",
-    },
-    {
-      icon: <Gamepad2 />,
-      title: "Gaming & Esports",
-      description:
-        "Early investors in esports, sponsoring top gamers like Ninja and major tournaments, making energy drinks synonymous with gaming culture.",
-    },
-    {
-      icon: <Music />,
-      title: "Music Scene",
-      description:
-        "From the Red Bull Music Academy to sponsoring countless festivals like Warped Tour, they connected with youth culture through music.",
-    },
-    {
-      icon: <Milestone />,
-      title: "Lifestyle Branding",
-      description:
-        "They pioneered the concept of selling a lifestyle, not just a product. Consumers buy into the high-energy, high-performance identity.",
-    },
+  const gpOurBase = [
+    "State-of-the-art infrastructure",
+    "High-quality products",
+    "Experienced quality auditors",
+    "Affordable pricing policy",
+    "Timely delivery",
+    "24×7 Service",
+    "Ethical business practices",
   ];
-
-  const logos = [
-    "/crouselLogo/1.jpg",
-    "/crouselLogo/2.jpg",
-    "/crouselLogo/3.jpg",
-    "/crouselLogo/4.jpg",
-    "/crouselLogo/5.jpg",
-    "/crouselLogo/6.jpg",
-    "/crouselLogo/7.jpg",
-    "/crouselLogo/9.png",
-    "/crouselLogo/monsLogo.png",
-  ];
-
-  const StatRow = ({ metric, rbValue, mValue, isAnimated = false }) => (
-    <div className="flex justify-between items-center py-4 border-b border-neutral-800">
-      <div className="w-2/5 text-center text-lg font-semibold">{rbValue}</div>
-      <div className="w-1/5 text-center text-sm text-neutral-400 uppercase">
-        {metric}
-      </div>
-      <div className="w-2/5 text-center text-lg font-semibold">{mValue}</div>
-    </div>
-  );
 
   return (
-    <div className="bg-black text-neutral-200 min-h-screen font-sans overflow-x-hidden">
-      <div className="absolute inset-0 z-0 opacity-40">
-        <div className="absolute bottom-0 left-[-20%] right-[-20%] top-[20%] h-[1000px] w-[140%] rounded-full bg-gradient-radial from-lime-500/40 via-black to-black animate-pulse-slow"></div>
-        <div className="absolute bottom-[-40%] left-[20%] right-[20%] h-[800px] w-[60%] rounded-full bg-gradient-radial from-cyan-500/30 via-black to-black animate-pulse-slow animation-delay-3000"></div>
+    <div className="bg-[#0a0a0a] text-neutral-200 min-h-screen font-sans overflow-x-hidden">
+      {/* Background glow */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-green-600/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-emerald-700/10 blur-[120px]" />
       </div>
 
       <div className="relative z-10">
         <Navbar />
-        <main className="container mx-auto max-w-6xl p-4 sm:p-8 pt-24 sm:pt-32">
-          <motion.section
-            className="text-center mb-20"
-            initial="hidden"
-            animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.2 } } }}
-          >
-            <motion.h1
-              variants={{
-                hidden: { opacity: 0, y: 50 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.8, ease: "easeOut" },
-                },
-              }}
-              className="text-5xl md:text-8xl font-black text-white mb-4 tracking-tighter"
-            >
-              Titans of Energy
-            </motion.h1>
-            <motion.p
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.8, ease: "easeOut" },
-                },
-              }}
-              className="text-lg text-neutral-300 max-w-3xl mx-auto"
-            >
-              A deep dive into the brands that built an industry. Explore the
-              history, science, and culture behind Red Bull and Monster.
-            </motion.p>
+
+        <main className="max-w-5xl mx-auto px-4 sm:px-8 pt-28 pb-24 space-y-28">
+
+          {/* ── HERO ──────────────────────────────────────────────────── */}
+          <motion.section {...fadeUp()} className="text-center">
+            {/* Logo image */}
+            <div className="flex justify-center mb-6">
+              <div className="w-32 h-32 flex items-center justify-center">
+                <img
+                  src="/logo/MANASH_LOGO.jpg__1_-removebg-preview.png"
+                  alt="Manash Beverage Logo"
+                  className="w-full h-full object-contain"
+                  style={{
+                    filter: "drop-shadow(0 0 15px rgba(34,197,94,0.3))",
+                  }}
+                />
+              </div>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight">
+              <span className="text-white">MANASH </span>
+              <span className="text-green-400">BEVERAGE</span>
+            </h1>
+            <p className="mt-4 text-lg text-neutral-400 max-w-3xl mx-auto leading-relaxed">
+              An Indian Company under proprietorship having its head office at{" "}
+              <span className="text-green-400 font-semibold">
+                Sutapatti, Muzaffarpur Bihar – 842001
+              </span>
+              . Established one plant (Capacity 120 BPM) of{" "}
+              <strong className="text-white">CLEAR WATER</strong> in
+              Muzaffarpur industrial area and another plant (Capacity 90 BPM)
+              of{" "}
+              <strong className="text-white">G-20 WATER</strong> in Hazipur
+              industrial area.
+            </p>
           </motion.section>
 
-          <motion.div
-            className="space-y-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            variants={{
-              visible: { transition: { staggerChildren: 0.4 } },
-            }}
-          >
-            {/* === Red Bull Section === */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, x: -50 },
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                  transition: { duration: 0.8, ease: "easeOut" },
-                },
-              }}
-              className="grid md:grid-cols-12 gap-8 items-stretch"
-            >
-              {/* Left Card */}
-              <div className="md:col-span-5 flex flex-col justify-center items-center bg-neutral-900/50 border border-blue-500/40 rounded-2xl backdrop-blur-md p-8 shadow-[0_0_25px_rgba(59,130,246,0.3)] transition-all hover:shadow-[0_0_45px_rgba(59,130,246,0.6)]">
-                <div className="relative">
-                  <div className="absolute inset-0 blur-2xl bg-gradient-to-r from-red-500 via-blue-500 to-blue-400 opacity-30 rounded-2xl"></div>
-                  <img
-                    src="/abt1.jpg"
-                    alt="Red Bull Logo"
-                    className="relative w-56 h-auto rounded-xl object-contain drop-shadow-[0_0_20px_rgba(59,130,246,0.5)]"
-                  />
-                </div>
-                <h2 className="text-4xl font-extrabold text-white text-center mt-6">
-                  Gives You Wings
-                </h2>
-              </div>
-
-              {/* Right Info */}
-              {/* Right Info */}
-              <div className="md:col-span-7 bg-neutral-900/60 border border-neutral-800 rounded-2xl p-6 pt-4 backdrop-blur-sm flex flex-col justify-start shadow-[0_0_30px_rgba(0,0,0,0.4)]">
-                {/* Tabs */}
-                <div className="flex bg-neutral-800/60 p-1 rounded-xl mb-6 sticky top-0 z-10 shadow-inner">
-                  <TabButton
-                    label="Formula"
-                    icon={<Beaker size={16} />}
-                    isActive={activeTabRedBull === "formula"}
-                    onClick={() => setActiveTabRedBull("formula")}
-                  />
-                  <TabButton
-                    label="History"
-                    icon={<Calendar size={16} />}
-                    isActive={activeTabRedBull === "history"}
-                    onClick={() => setActiveTabRedBull("history")}
-                  />
-                  <TabButton
-                    label="Marketing"
-                    icon={<Map size={16} />}
-                    isActive={activeTabRedBull === "marketing"}
-                    onClick={() => setActiveTabRedBull("marketing")}
-                  />
-                </div>
-
-                {/* Animated Tab Content */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTabRedBull}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                    className="mt-1 space-y-4"
-                  >
-                    <h3 className="text-2xl font-semibold text-white mb-3 flex items-center gap-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.15)]">
-                      {redBullData[activeTabRedBull].icon}
-                      {redBullData[activeTabRedBull].title}
-                    </h3>
-
-                    <p className="text-neutral-300 mb-4 leading-relaxed text-[15px]">
-                      {redBullData[activeTabRedBull].content}
-                    </p>
-
-                    <div className="space-y-3">
-                      {redBullData[activeTabRedBull].points.map(
-                        (point, index) => (
-                          <div
-                            key={index}
-                            className="flex items-start gap-3 text-neutral-200 hover:text-white transition-colors duration-200"
-                          >
-                            <div className="text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)] mt-[3px]">
-                              {point.icon}
-                            </div>
-                            <span className="leading-snug">
-                              <span className="text-blue-400/90 font-medium">
-                                {point.highlight}
-                              </span>{" "}
-                              {point.text}
-                            </span>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </motion.div>
-
-            {/* === Monster Section === */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, x: 50 },
-                visible: {
-                  opacity: 1,
-                  x: 0,
-                  transition: { duration: 0.8, ease: "easeOut" },
-                },
-              }}
-              className="grid md:grid-cols-12 gap-8 items-stretch"
-            >
-              {/* Left Info */}
-              <div className="md:col-span-7 bg-neutral-900/50 border border-neutral-800 rounded-2xl p-6 pt-4 backdrop-blur-sm flex flex-col justify-start order-2 md:order-1">
-                {/* Tabs */}
-                <div className="flex bg-neutral-800/50 p-1 rounded-xl mb-4">
-                  <TabButton
-                    label="Formula"
-                    icon={<Beaker size={16} />}
-                    isActive={activeTabMonster === "formula"}
-                    onClick={() => setActiveTabMonster("formula")}
-                  />
-                  <TabButton
-                    label="History"
-                    icon={<Calendar size={16} />}
-                    isActive={activeTabMonster === "history"}
-                    onClick={() => setActiveTabMonster("history")}
-                  />
-                  <TabButton
-                    label="Marketing"
-                    icon={<Map size={16} />}
-                    isActive={activeTabMonster === "marketing"}
-                    onClick={() => setActiveTabMonster("marketing")}
-                  />
-                </div>
-
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTabMonster}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
-                      {monsterData[activeTabMonster].icon}
-                      {monsterData[activeTabMonster].title}
-                    </h3>
-                    <p className="text-neutral-400 mb-4">
-                      {monsterData[activeTabMonster].content}
-                    </p>
-                    <div className="space-y-2">
-                      {monsterData[activeTabMonster].points.map((point, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-3 text-neutral-300"
-                        >
-                          <div className="text-lime-400">{point.icon}</div>
-                          <span>{point.text}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-
-              {/* Right Card */}
-              <div className="md:col-span-5 flex flex-col justify-center items-center bg-neutral-900/50 border border-lime-500/40 rounded-2xl backdrop-blur-md p-8 shadow-[0_0_25px_rgba(132,204,22,0.3)] hover:shadow-[0_0_45px_rgba(132,204,22,0.6)] order-1 md:order-2 transition-all">
-                <div className="relative">
-                  <div className="absolute inset-0 blur-2xl bg-gradient-to-r from-lime-400 to-green-500 opacity-30 rounded-2xl"></div>
-                  <img
-                    src="/mabt1.jpg"
-                    alt="Monster Logo"
-                    className="relative w-56 h-auto rounded-xl object-contain drop-shadow-[0_0_20px_rgba(132,204,22,0.5)]"
-                  />
-                </div>
-                <h2 className="text-4xl font-extrabold text-white text-center mt-6">
-                  Unleash The Beast
-                </h2>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* === NEW SECTION WITH IMAGE TAG === */}
-          <motion.section
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="py-20"
-          >
-            {/* This div is now the container for the image and overlay */}
-            <div
-              className="relative min-h-[400px] md:min-h-[500px] rounded-3xl border border-neutral-800 overflow-hidden"
-            >
-              {/* The image is now a proper <img> tag with motion properties */}
-              <motion.img
-                src="/bg/monsterbanner.jpg"
-                alt="Monster Energy banner with claw marks"
-                className="absolute inset-0 w-full h-full object-cover"
-                initial={{ scale: 1.1, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              />
-
-              {/* The overlay still sits on top of the image */}
-              <div className="absolute inset-0 bg-black/50"></div>
+          {/* ── MARKETING PARAGRAPH ───────────────────────────────────── */}
+          <motion.section {...fadeUp(0.1)}>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-sm leading-relaxed text-neutral-300 text-[15px]">
+              We are marketing the products of Frojo Group Beverages based in
+              Assam, Royal Challenge Packaged Drinking Water, Jimmy's Cocktails,
+              Rockwell Refrigeration, Voltas Refrigerators and Packaged Dry
+              Fruits in Bihar. Apart from, company is dealing with CCTV cameras
+              and household electronics items in Bihar and Jharkhand by its own
+              imports in collaboration with the channel partners.
             </div>
           </motion.section>
 
-          <motion.section
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 1 }}
-            className="py-20"
-          >
-            <h2 className="text-center text-4xl md:text-5xl font-bold text-white mb-4">
-              A Rivalry For The Ages
-            </h2>
-            <p className="text-center text-lg text-neutral-400 mb-12 max-w-2xl mx-auto">
-              Follow the key moments that defined the battle for energy drink
-              supremacy.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {timelineEvents.map((item, index) => {
-                const brandClass =
-                  item.brand === "Red Bull"
-                    ? "border-t-blue-500 hover:shadow-blue-500/30"
-                    : item.brand === "Monster"
-                      ? "border-t-lime-500 hover:shadow-lime-500/30"
-                      : "border-t-purple-500 hover:shadow-purple-500/30";
-
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.5 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className={`bg-neutral-900/50 border border-neutral-800 border-t-4 ${brandClass} rounded-xl p-6 flex flex-col h-full hover:bg-neutral-800/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-lg`}
-                  >
-                    <p className="text-3xl font-bold text-white mb-2">
-                      {item.year}
-                    </p>
-                    <h3
-                      className={`font-semibold text-lg mb-4 ${item.brand === "Red Bull"
-                        ? "text-blue-400"
-                        : "text-lime-400"
-                        }`}
-                    >
-                      {item.brand}
-                    </h3>
-                    <p className="text-neutral-400 text-sm flex-grow">
-                      {item.event}
-                    </p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.section>
-
-          <motion.section
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 1 }}
-            className="py-20"
-          >
-            <h2 className="text-center text-4xl md:text-5xl font-bold text-white mb-4">
-              More Than a Drink
-            </h2>
-            <p className="text-center text-lg text-neutral-400 mb-12 max-w-2xl mx-auto">
-              These brands didn't just sell beverages; they shaped entire
-              cultures.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {culturalImpacts.map((item, index) => (
+          {/* ── STATS ROW ─────────────────────────────────────────────── */}
+          <motion.section {...fadeUp(0.15)}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { stat: "3", label: "Operational Plants" },
+                { stat: "22", label: "Districts in Bihar" },
+                { stat: "150+", label: "Distributors" },
+                { stat: "4000+", label: "Retail Partners" },
+              ].map((s, i) => (
                 <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-neutral-900/50 border border-neutral-800 p-6 rounded-2xl text-center backdrop-blur-sm hover:-translate-y-2 hover:shadow-lg hover:shadow-lime-500/30 transition-all duration-300"
+                  key={i}
+                  {...fadeUp(i * 0.08)}
+                  className="bg-white/5 border border-green-500/20 rounded-2xl p-6 text-center hover:border-green-400/50 hover:shadow-[0_0_24px_rgba(34,197,94,0.2)] transition-all duration-300"
                 >
-                  <div className="inline-block p-4 bg-neutral-800 rounded-full mb-4 text-lime-400">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-neutral-400 text-sm">{item.description}</p>
+                  <p className="text-4xl font-black text-green-400">{s.stat}</p>
+                  <p className="text-sm text-neutral-400 mt-1">{s.label}</p>
                 </motion.div>
               ))}
             </div>
           </motion.section>
 
-          <section className="py-20">
-            <h2 className="text-center text-4xl md:text-5xl font-bold text-white mb-12">
-              Our Favorite Energy Drinks
+          {/* ── KEY ASPECTS OF MANASH BEVERAGE ───────────────────────── */}
+          <motion.section {...fadeUp()}>
+            <SectionTitle>Key Aspects of MANASH BEVERAGES</SectionTitle>
+            <div className="space-y-5">
+              {keyAspects.map((item, i) => (
+                <motion.div
+                  key={i}
+                  {...fadeUp(i * 0.07)}
+                  className="flex gap-4 items-start bg-white/4 border border-white/8 rounded-xl p-5 hover:border-green-500/40 hover:bg-green-950/20 transition-all duration-300"
+                >
+                  <div className="mt-1 min-w-[10px] h-[10px] rounded-full bg-green-400 shadow-[0_0_8px_#22c55e]" />
+                  <div>
+                    <h3 className="text-green-400 font-bold text-lg mb-1">
+                      {item.title}:
+                    </h3>
+                    <p className="text-neutral-300 text-sm leading-relaxed">
+                      {item.content}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* ── BRAND SLIDER ──────────────────────────────────────────── */}
+          <motion.section {...fadeUp()}>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-green-400 mb-8 text-center tracking-wide">
+              Our Brand Partners
             </h2>
-            <div className="relative w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
-              <div className="flex w-max animate-marquee">
-                {[...logos, ...logos].map((logo, index) => (
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/3 py-4">
+              {/* Top fade masks */}
+              <div className="absolute left-0 top-0 h-full w-20 bg-gradient-to-r from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 h-full w-20 bg-gradient-to-l from-[#0a0a0a] to-transparent z-10 pointer-events-none" />
+              {/* Track — duplicated for seamless loop */}
+              <div
+                className="flex gap-8 brand-slider-track"
+                style={{ width: "max-content" }}
+              >
+                {[...Array(2)].flatMap((_, set) =>
+                  [
+                    "/brand/image.png",
+                    "/brand/image copy.png",
+                    "/brand/image copy 2.png",
+                    "/brand/image copy 3.png",
+                    "/brand/image copy 4.png",
+                    "/brand/image copy 5.png",
+                    "/brand/image copy 6.png",
+                    "/brand/image copy 7.png",
+                    "/brand/image copy 8.png",
+                    "/brand/image copy 9.png",
+                    "/brand/image copy 10.png",
+                    "/brand/image copy 11.png",
+                    "/brand/image copy 12.png",
+                    "/brand/image copy 13.png",
+                    "/brand/image copy 14.png",
+                    "/brand/image copy 15.png",
+                    "/brand/image copy 16.png",
+                  ].map((src, i) => (
+                    <div
+                      key={`${set}-${i}`}
+                      className="flex-shrink-0 w-36 h-24 rounded-xl overflow-hidden bg-white/8 border border-white/10 flex items-center justify-center hover:border-green-400/50 hover:scale-105 transition-all duration-300 cursor-pointer group"
+                    >
+                      <img
+                        src={src}
+                        alt={`Brand ${i + 1}`}
+                        className="max-w-full max-h-full object-contain p-2 group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+            {/* Inline keyframes for the slider + pause on hover */}
+            <style>{`
+              .brand-slider-track {
+                animation: brandSlide ${17 * 1.5}s linear infinite;
+              }
+              .brand-slider-track:hover {
+                animation-play-state: paused;
+              }
+              @keyframes brandSlide {
+                0%   { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+            `}</style>
+          </motion.section>
+
+          {/* ── DIVIDER ───────────────────────────────────────────────── */}
+          <div className="border-t border-white/10 relative">
+            <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#0a0a0a] px-6 text-green-400 text-sm font-semibold tracking-widest uppercase">
+              Our Sister Company
+            </div>
+          </div>
+
+          {/* ── GREEN PACKSYS HERO ────────────────────────────────────── */}
+          <motion.section {...fadeUp()} className="text-center">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight">
+              <span className="text-white">GREEN </span>
+              <span className="text-green-400">PACKSYS </span>
+              <span className="text-white">SOLUTIONS</span>
+            </h2>
+            <div className="mt-2 text-green-400 underline underline-offset-4 text-lg font-semibold">
+              GREEN PACKSYS SOLUTIONS
+            </div>
+          </motion.section>
+
+          {/* ── GP TABS ───────────────────────────────────────────────── */}
+          <motion.section {...fadeUp()}>
+            {/* Tab buttons */}
+            <div className="flex flex-wrap gap-2 bg-white/5 p-1.5 rounded-xl mb-8 border border-white/10">
+              {["overview", "products", "clients", "info"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setGpTab(tab)}
+                  className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-semibold capitalize transition-all duration-300 ${
+                    gpTab === tab
+                      ? "bg-green-500 text-black shadow-[0_0_15px_rgba(34,197,94,0.5)]"
+                      : "text-neutral-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {tab === "overview"
+                    ? "Overview"
+                    : tab === "products"
+                    ? "Products"
+                    : tab === "clients"
+                    ? "Clients"
+                    : "Company Info"}
+                </button>
+              ))}
+            </div>
+
+            {/* ── Overview ── */}
+            {gpTab === "overview" && (
+              <motion.div
+                key="overview"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-5 text-[15px] text-neutral-300 leading-relaxed"
+              >
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <p>
+                    Founded in 2015,{" "}
+                    <span className="text-green-400 font-semibold">
+                      Green Packsys Solutions
+                    </span>{" "}
+                    has quickly earned a reputation as a distinguished
+                    Manufacturer, Retailer, and Supplier of advanced systems for
+                    Mineral/Packaged Drinking Water Bottling Plants, Carbonated
+                    Soft Drink Plants, Fruit Juice Plants, Liquid Filling
+                    Machines, and a variety of other specialized equipment.
+                    Our state-of-the-art solutions are meticulously engineered to
+                    meet the diverse needs of our clientele, positioning us as a
+                    trusted partner in the packaging and beverage production
+                    industry.
+                  </p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <p>
+                    At the heart of our operations lies a deep commitment to
+                    exceeding customer expectations. We place immense value on
+                    the delivery of exceptional quality products, ensuring that
+                    every system we offer is designed with precision and built to
+                    last. Our offerings are crafted to not only meet but surpass
+                    the industry standards, providing customers with solutions
+                    that are reliable, efficient, and tailored to their specific
+                    operational requirements.
+                  </p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <p>
+                    The remarkable growth and success that{" "}
+                    <span className="text-green-400 font-semibold">
+                      Green Packsys Solutions
+                    </span>{" "}
+                    has achieved in a highly competitive market can be directly
+                    attributed to the visionary leadership of{" "}
+                    <strong className="text-white">Mr. Neel Kamal</strong>. His
+                    unwavering support, strategic direction, and commitment to
+                    excellence have been instrumental in shaping our company's
+                    trajectory, empowering us to continuously expand our reach
+                    and capabilities.
+                  </p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <p className="mb-4 text-green-400 font-semibold text-base">
+                    GREEN PACKSYS SOLUTIONS — Wide Industry Presence:
+                  </p>
+                  <p>
+                    Widely known in the water treatment industry, as an
+                    established and reliable supply partner. With over 10 years'
+                    experience, offering the best most competitive prices using
+                    components from leading manufacturers like{" "}
+                    <span className="text-green-400">
+                      Dow Chemicals, Hydromantic, Grundfos, Pentair, Lubin,
+                      H-Guru
+                    </span>{" "}
+                    and many others. Reliable after sales, and prompt service is
+                    our promise, with over 50 skilled service engineers in all
+                    over India.
+                  </p>
+                </div>
+
+                {/* Why Us */}
+                <div className="bg-white/5 border border-green-500/20 rounded-2xl p-6">
+                  <h3 className="text-green-400 font-bold text-lg mb-3">
+                    Why Us?
+                  </h3>
+                  <p className="mb-3">
+                    We are engaged in the provision of a qualitative array of
+                    machines for different industries. These are manufactured in
+                    compliance with industrial quality guidelines using premium
+                    quality raw materials. Their quality is inspected on multiple
+                    parameters before dispatch by our team of quality analysts.
+                  </p>
+                  <p className="mb-4">
+                    Customer is never out of choices but we channelize all our
+                    resources and back up team to keep our plants in perfect
+                    running condition even after warranty period.
+                  </p>
+                  <p className="text-green-400 font-semibold mb-2">Our base is:</p>
+                  <ul className="space-y-1.5">
+                    {gpOurBase.map((b, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green-400 flex-shrink-0" />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Vision */}
+                <div className="bg-gradient-to-r from-green-950/40 to-emerald-950/30 border border-green-500/30 rounded-2xl p-6">
+                  <h3 className="text-green-400 font-bold text-lg mb-2">
+                    Our Vision & Mission
+                  </h3>
+                  <p>
+                    We invest in research and development and through constant
+                    innovations. We aim to develop most cost-effective plants
+                    critical to our customers operations, improve their
+                    productivity, and support their success.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── Products ── */}
+            {gpTab === "products" && (
+              <motion.div
+                key="products"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                <p className="text-neutral-400 mb-6">
+                  Green Packsys Solutions manufactures and supplies a wide range
+                  of water treatment and industrial plant solutions:
+                </p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {gpProducts.map((p, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.06 }}
+                      className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-xl p-4 hover:border-green-400/40 hover:bg-green-950/20 transition-all"
+                    >
+                      <span className="text-green-400 font-black text-sm min-w-[36px]">
+                        {p.code !== "—" ? p.code : "✦"}
+                      </span>
+                      <span className="text-neutral-200 text-sm font-medium leading-snug">
+                        {p.name}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="mt-8 space-y-4">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+                    <h3 className="text-green-400 font-bold mb-2">
+                      Products and Services
+                    </h3>
+                    <p className="text-neutral-300 text-sm leading-relaxed">
+                      RO Plants Industrial and Commercial, Sewage Treatment Plant
+                      (STP), Effluent Treatment Plant (ETP), DM Water Plant, EDI
+                      Plant and Water Softeners. We have a large footprint in
+                      North India, whereby we supply our plants on a sale as well
+                      as rental basis, AMC services provided.
+                    </p>
+                  </div>
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    {[
+                      {
+                        label: "Quality Measures / Testing Facilities",
+                        value: "Yes",
+                      },
+                      { label: "Customized Packaging", value: "Yes" },
+                      {
+                        label: "Payment Mode",
+                        value: "Cheque / Online transfer / DD / Bank Transfer",
+                      },
+                      { label: "Shipment Mode", value: "By Road" },
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="bg-white/5 border border-white/10 rounded-xl p-4"
+                      >
+                        <p className="text-green-400 text-xs font-semibold mb-1">
+                          {item.label}
+                        </p>
+                        <p className="text-white font-bold">{item.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* ── Clients ── */}
+            {gpTab === "clients" && (
+              <motion.div
+                key="clients"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-5"
+              >
+                {Object.entries(gpClients).map(([cat, names], i) => (
                   <div
-                    key={index}
-                    className="flex-shrink-0 w-64 mx-4 flex items-center justify-center"
+                    key={i}
+                    className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-green-400/30 transition-all"
                   >
-                    <img
-                      src={logo}
-                      alt={`Energy Drink Logo ${index + 1}`}
-                      className="max-h-24 object-contain"
-                    />
+                    <h3 className="text-green-400 font-bold text-base mb-2">
+                      {cat}:
+                    </h3>
+                    <p className="text-neutral-300 text-sm leading-relaxed">
+                      {names}
+                    </p>
                   </div>
                 ))}
-              </div>
-            </div>
-          </section>
+              </motion.div>
+            )}
 
-          {/* === UPDATED "VS" FACE-OFF SECTION === */}
+            {/* ── Company Info ── */}
+            {gpTab === "info" && (
+              <motion.div
+                key="info"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-6"
+              >
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <h3 className="text-green-400 font-bold text-lg mb-4">
+                    Basic Information
+                  </h3>
+                  <div className="space-y-2">
+                    {gpBasicInfo.map((item, i) => (
+                      <BulletItem key={i} label={item.label} value={item.value} />
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <h3 className="text-green-400 font-bold text-lg mb-4">
+                    Company USP
+                  </h3>
+                  <BulletItem
+                    label="Quality Measures / Testing Facilities"
+                    value="Yes"
+                  />
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                  <h3 className="text-green-400 font-bold text-lg mb-4">
+                    Packaging / Payment and Shipment Details
+                  </h3>
+                  <div className="space-y-2">
+                    <BulletItem label="Customized Packaging" value="Yes" />
+                    <BulletItem
+                      label="Payment Mode"
+                      value="Cheque / Online transfer / DD / Bank Transfer"
+                    />
+                    <BulletItem label="Shipment Mode" value="By Road" />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </motion.section>
+
+          {/* ── FOOTER BANNER ─────────────────────────────────────────── */}
           <motion.section
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 1 }}
-            className="py-20"
+            {...fadeUp()}
+            className="text-center bg-gradient-to-r from-green-950/50 to-emerald-950/40 border border-green-500/30 rounded-3xl p-8 md:p-12"
           >
-            <h2 className="text-center text-4xl md:text-5xl font-bold text-white mb-12">
-              Head-to-Head: The Final Showdown
-            </h2>
-
-            <div className="max-w-4xl mx-auto bg-neutral-900/50 border border-neutral-800 rounded-2xl p-8 backdrop-blur-sm">
-              {/* Titles */}
-              <div className="flex justify-between items-end mb-2 relative">
-                {/* Red Bull */}
-                <div className="w-1/3 text-center">
-                  <h3 className="text-3xl font-extrabold bg-gradient-to-r from-red-500 via-red-400 to-blue-500 bg-clip-text text-transparent">
-                    Red Bull
-                  </h3>
-                </div>
-
-                {/* VS */}
-                <div className="absolute left-1/2 -translate-x-1/2 translate-y-4">
-                  <span className="text-3xl font-black bg-gradient-to-r from-red-500 via-blue-500 to-green-500 bg-clip-text text-transparent">
-                    VS
-                  </span>
-                </div>
-
-                {/* Monster */}
-                <div className="w-1/3 text-center">
-                  <h3 className="text-3xl font-extrabold text-green-400">
-                    Monster
-                  </h3>
-                </div>
-              </div>
-
-              {/* Stats */}
-              <div className="flex flex-col gap-3 mt-4">
-                <StatRow
-                  metric="Founded"
-                  rbValue={
-                    <span className="bg-gradient-to-r from-red-500 via-red-400 to-blue-500 bg-clip-text text-transparent font-semibold">
-                      <AnimatedStatCounter to={1987} />
-                    </span>
-                  }
-                  mValue={
-                    <span className="text-green-400 font-semibold">
-                      <AnimatedStatCounter to={2002} />
-                    </span>
-                  }
-                />
-                <StatRow
-                  metric="Std. Can Size"
-                  rbValue={
-                    <span className="bg-gradient-to-r from-red-500 via-red-400 to-blue-500 bg-clip-text text-transparent font-semibold">
-                      8.4 fl oz
-                    </span>
-                  }
-                  mValue={
-                    <span className="text-green-400 font-semibold">
-                      16 fl oz
-                    </span>
-                  }
-                />
-                <StatRow
-                  metric="Caffeine / 16oz"
-                  rbValue={
-                    <span className="bg-gradient-to-r from-red-500 via-red-400 to-blue-500 bg-clip-text text-transparent font-semibold">
-                      ~<AnimatedStatCounter to={151} />
-                      mg
-                    </span>
-                  }
-                  mValue={
-                    <span className="text-green-400 font-semibold">
-                      ~<AnimatedStatCounter to={160} />
-                      mg
-                    </span>
-                  }
-                />
-                <StatRow
-                  metric="Varieties"
-                  rbValue={
-                    <span className="bg-gradient-to-r from-red-500 via-red-400 to-blue-500 bg-clip-text text-transparent font-semibold">
-                      ~<AnimatedStatCounter to={30} />+
-                    </span>
-                  }
-                  mValue={
-                    <span className="text-green-400 font-semibold">
-                      ~<AnimatedStatCounter to={34} />+
-                    </span>
-                  }
-                />
-                <StatRow
-                  metric="Slogan"
-                  rbValue={
-                    <span className="italic bg-gradient-to-r from-red-500 via-red-400 to-blue-500 bg-clip-text text-transparent">
-                      "Gives You Wings"
-                    </span>
-                  }
-                  mValue={
-                    <span className="italic text-green-400">
-                      "Unleash The Beast"
-                    </span>
-                  }
-                />
-              </div>
-            </div>
+            <p className="text-green-400 font-black text-2xl md:text-3xl mb-2">
+              For MANASH BEVERAGE
+            </p>
+            <div className="h-px w-48 bg-green-500/40 mx-auto my-4" />
+            <p className="text-neutral-400 text-sm">
+              H/O: Kamlubabu Campus, Near IDBI Bank, Sutapatti, Muzaffarpur,
+              Bihar – 842001 &nbsp;|&nbsp; Ph: +91 7042626210
+            </p>
+            <p className="text-neutral-400 text-sm mt-1">
+              Email:{" "}
+              <a
+                href="mailto:hr@manashbeverage.in"
+                className="text-green-400 hover:underline"
+              >
+                hr@manashbeverage.in
+              </a>{" "}
+              /{" "}
+              <a
+                href="mailto:enquiry@manashbeverage.in"
+                className="text-green-400 hover:underline"
+              >
+                enquiry@manashbeverage.in
+              </a>
+            </p>
           </motion.section>
         </main>
       </div>

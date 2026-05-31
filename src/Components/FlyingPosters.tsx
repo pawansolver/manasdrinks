@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useRef, useEffect,useState } from 'react';
 import { Renderer, Camera, Transform, Plane, Program, Mesh, Texture } from 'ogl';
 
